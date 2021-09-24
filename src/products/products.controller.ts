@@ -12,6 +12,7 @@ import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { AddIngredientDto } from './dto/add-ingredient.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('products')
@@ -41,5 +42,15 @@ export class ProductsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.productsService.remove(+id);
+  }
+
+  @Post('ingredients')
+  addIngredient(@Body() addIngredientInfos: AddIngredientDto) {
+    return this.productsService.addIngredient(addIngredientInfos);
+  }
+
+  @Get(':id/ingredients')
+  productIngredients(@Param('id') id: string) {
+    return this.productsService.productIngredients(+id);
   }
 }

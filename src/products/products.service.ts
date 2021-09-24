@@ -5,16 +5,23 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Ingredient } from 'src/ingredients/entities/ingredient.entity';
 import { Repository } from 'typeorm';
+import { AddIngredientDto } from './dto/add-ingredient.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
+import { ProductIngredients } from './entities/productIngredients.entity';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Ingredient)
+    private readonly ingredientRepository: Repository<Ingredient>,
+    @InjectRepository(ProductIngredients)
+    private readonly productIngredientsRepository: Repository<ProductIngredients>,
   ) {}
 
   async create(createIngredientDto: CreateProductDto) {
@@ -23,12 +30,14 @@ export class ProductsService {
   }
 
   async findAll() {
-    return this.productRepository.find();
+    return this.productRepository.find({
+      relations: ['productIngredients', 'productIngredients.ingredient'],
+    });
   }
 
   async findOne(id: number) {
     const product = await this.productRepository.findOne(id);
-    if (!product) throw new NotFoundException();
+    if (!product) throw new NotFoundException('Not found product');
     return product;
   }
 
@@ -55,5 +64,28 @@ export class ProductsService {
     const product = await this.productRepository.findOne({ name });
     if (product && product.id !== id)
       throw new ConflictException('Existing product name');
+  }
+
+  async addIngredient(infos: AddIngredientDto) {
+    const { productId, ingredientId, ingredient_units } = infos;
+
+    await this.findOne(productId);
+    const ingredient = await this.ingredientRepository.findOne({
+      id: ingredientId,
+    });
+    if (!ingredient) throw new NotFoundException('Not found ingredient');
+
+    return this.productIngredientsRepository.save({
+      productId,
+      ingredientId,
+      ingredient_units,
+    });
+  }
+
+  async productIngredients(id: number) {
+    return this.productIngredientsRepository.find({
+      where: { productId: id },
+      relations: ['ingredient'],
+    });
   }
 }
