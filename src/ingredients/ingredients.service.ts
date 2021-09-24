@@ -17,10 +17,7 @@ export class IngredientsService {
   ) {}
 
   async create(createIngredientDto: CreateIngredientDto) {
-    const ingredient = await this.ingredientRepository.findOne({
-      name: createIngredientDto.name,
-    });
-    if (ingredient) throw new ConflictException('existing ingredient name');
+    await this.validIngredientName(createIngredientDto.name);
     return this.ingredientRepository.save(createIngredientDto);
   }
 
@@ -46,5 +43,10 @@ export class IngredientsService {
     if (!ingredient) throw new NotFoundException();
     await this.ingredientRepository.delete(id);
     throw new HttpException('Successfully deleted', 204);
+  }
+
+  async validIngredientName(name: string) {
+    const ingredient = await this.ingredientRepository.findOne({ name });
+    if (ingredient) throw new ConflictException('Existing ingredient name');
   }
 }
