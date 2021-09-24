@@ -1,11 +1,11 @@
-import { IsNotEmpty, Min, IsEmail } from 'class-validator';
+import { IsNotEmpty, IsEmail, Length } from 'class-validator';
 
 export class LoginUserDto {
   @IsEmail()
   @IsNotEmpty()
   email: string;
 
-  @Min(6)
+  @Length(6, 100)
   @IsNotEmpty()
   password: string;
 }
