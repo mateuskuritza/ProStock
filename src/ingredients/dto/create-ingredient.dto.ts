@@ -9,12 +9,12 @@ export class CreateIngredientDto {
   @IsNotEmpty()
   @IsString()
   @Length(1, 20)
-  unit_type: string;
+  unitType: string;
 
   @IsNotEmpty()
   @IsNumber()
   @Min(0)
-  unit_price: number;
+  unitPrice: number;
 
   @IsNotEmpty()
   @IsNumber()

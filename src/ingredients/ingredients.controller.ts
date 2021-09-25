@@ -38,10 +38,7 @@ export class IngredientsController {
     @Param('id') id: string,
     @Body() updateIngredientDto: UpdateIngredientDto,
   ) {
-    return this.ingredientsService.changeAvailableQuantity(
-      +id,
-      updateIngredientDto.available,
-    );
+    return this.ingredientsService.update(+id, updateIngredientDto);
   }
 
   @Delete(':id')

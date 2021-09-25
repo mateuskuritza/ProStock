@@ -10,10 +10,10 @@ export class Ingredient {
   name: string;
 
   @Column({ length: 100 })
-  unit_type: string;
+  unitType: string;
 
   @Column()
-  unit_price: number;
+  unitPrice: number;
 
   @Column()
   available: number;
