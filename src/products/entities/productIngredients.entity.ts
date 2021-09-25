@@ -14,11 +14,17 @@ export class ProductIngredients {
   ingredientId: number;
 
   @Column()
-  ingredient_units: number;
+  ingredientUnits: number;
 
-  @ManyToOne(() => Product, (product) => product.productIngredients)
+  @ManyToOne(() => Product, (product) => product.productIngredients, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   product: Product;
 
-  @ManyToOne(() => Ingredient, (ingredient) => ingredient.productIngredients)
+  @ManyToOne(() => Ingredient, (ingredient) => ingredient.productIngredients, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   ingredient: Ingredient;
 }

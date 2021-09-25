@@ -14,5 +14,5 @@ export class AddIngredientDto {
   @IsNotEmpty()
   @IsNumber()
   @Min(1)
-  ingredient_units: number;
+  ingredientUnits: number;
 }

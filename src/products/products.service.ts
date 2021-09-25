@@ -30,19 +30,60 @@ export class ProductsService {
   }
 
   async findAll() {
-    return this.productRepository.find({
+    const products = await this.productRepository.find({
       relations: ['productIngredients', 'productIngredients.ingredient'],
     });
+
+    const productsOverview: any[] = [];
+
+    products.forEach((product) => {
+      const { available, cost } = this.costAndAvailability(
+        product.productIngredients,
+      );
+      const { productIngredients, ...rest } = product;
+
+      productsOverview.push({
+        ...rest,
+        available,
+        cost,
+      });
+    });
+
+    return productsOverview;
   }
 
   async findOne(id: number) {
-    const product = await this.productRepository.findOne(id);
+    const product = await this.productRepository.findOne(id, {
+      relations: ['productIngredients', 'productIngredients.ingredient'],
+    });
     if (!product) throw new NotFoundException('Not found product');
-    return product;
+
+    const { available, cost } = this.costAndAvailability(
+      product.productIngredients,
+    );
+
+    return { availableProduct: available, productCost: cost, ...product };
+  }
+
+  costAndAvailability(productIngredients: ProductIngredients[]) {
+    let available = true;
+    let cost = 0;
+
+    productIngredients.forEach((productIngredient) => {
+      const ingredient = productIngredient.ingredient;
+      const necessaryQuantity = productIngredient.ingredientUnits;
+      const availableQuantity = ingredient.available;
+
+      if (necessaryQuantity > availableQuantity) available = false;
+
+      cost += ingredient.unitPrice * necessaryQuantity;
+    });
+
+    return { available, cost };
   }
 
   async update(id: number, newProduct: UpdateProductDto) {
-    const product = await this.findOne(id);
+    const product = await this.productRepository.findOne(id);
 
     await this.validProductName(newProduct.name, id);
 
@@ -53,7 +94,7 @@ export class ProductsService {
   }
 
   async remove(id: number) {
-    const product = await this.findOne(id);
+    const product = await this.productRepository.findOne(id);
     if (!product) throw new NotFoundException();
     await this.productRepository.delete(id);
     throw new HttpException('Successfully deleted', 204);
@@ -67,18 +108,27 @@ export class ProductsService {
   }
 
   async addIngredient(infos: AddIngredientDto) {
-    const { productId, ingredientId, ingredient_units } = infos;
+    const { productId, ingredientId, ingredientUnits } = infos;
 
-    await this.findOne(productId);
+    await this.productRepository.findOne(productId);
     const ingredient = await this.ingredientRepository.findOne({
       id: ingredientId,
     });
     if (!ingredient) throw new NotFoundException('Not found ingredient');
 
+    const existingRelation = await this.productIngredientsRepository.findOne({
+      where: { productId, ingredientId },
+    });
+
+    if (existingRelation) {
+      existingRelation.ingredientUnits = ingredientUnits;
+      return this.productIngredientsRepository.save(existingRelation);
+    }
+
     return this.productIngredientsRepository.save({
       productId,
       ingredientId,
-      ingredient_units,
+      ingredientUnits,
     });
   }
 
