@@ -14,4 +14,7 @@ export class Product {
 
   @OneToMany(() => ProductIngredients, (prodIngred) => prodIngred.product)
   productIngredients: ProductIngredients[];
+
+  @Column({ nullable: true })
+  imageName: string;
 }
