@@ -21,6 +21,7 @@ export class AuthService {
   }
 
   async login(user: User) {
+    // Payload => saved information encoded in JWT
     const payload = { id: user.id, email: user.email };
     return {
       user_id: user.id,
