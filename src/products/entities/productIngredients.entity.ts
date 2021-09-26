@@ -1,4 +1,4 @@
-import { Ingredient } from 'src/ingredients/entities/ingredient.entity';
+import { Ingredient } from '../../ingredients/entities/ingredient.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Product } from './product.entity';
 

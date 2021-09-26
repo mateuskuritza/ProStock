@@ -12,7 +12,7 @@ const validExtensions = ['.png', '.jpg'];
 export const localStorage = {
   storage: diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'src/uploads/product-images');
+      cb(null, '../uploads/product-images');
     },
     filename: function (req, file, cb) {
       const fileName: string =

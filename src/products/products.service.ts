@@ -7,7 +7,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Response } from 'express';
 import { join } from 'path';
-import { Ingredient } from 'src/ingredients/entities/ingredient.entity';
+import { Ingredient } from '../ingredients/entities/ingredient.entity';
 import { Repository } from 'typeorm';
 import { AddIngredientDto } from './dto/add-ingredient.dto';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -149,7 +149,7 @@ export class ProductsService {
       throw new NotFoundException('This product does not have an image yet');
 
     return res.sendFile(
-      join(process.cwd(), 'src/uploads/product-images/' + product.imageName),
+      join(process.cwd(), '../uploads/product-images/' + product.imageName),
     );
   }
 }
