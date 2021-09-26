@@ -34,10 +34,12 @@ export class IngredientsService {
 
   async update(id: number, updateIngredientDto: UpdateIngredientDto) {
     const ingredient = await this.findOne(id);
+    await this.validIngredientName(updateIngredientDto.name);
     if (!ingredient) throw new NotFoundException();
 
     ingredient.unitPrice = updateIngredientDto?.unitPrice;
     ingredient.available = updateIngredientDto?.available;
+    ingredient.name = updateIngredientDto?.name;
 
     return this.ingredientRepository.save(ingredient);
   }
