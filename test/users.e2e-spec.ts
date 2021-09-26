@@ -7,7 +7,7 @@ import * as userFactory from './factories/userFactory';
 describe('UserController (e2e)', () => {
   let app: INestApplication;
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
@@ -16,7 +16,7 @@ describe('UserController (e2e)', () => {
     await app.init();
   });
 
-  afterEach(async () => await app.close());
+  afterAll(async () => await app.close());
 
   const newUser = userFactory.create();
 
