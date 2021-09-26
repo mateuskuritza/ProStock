@@ -1,4 +1,4 @@
-import { ProductIngredients } from 'src/products/entities/productIngredients.entity';
+import { ProductIngredients } from '../../products/entities/productIngredients.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity('ingredients')

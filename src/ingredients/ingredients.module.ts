@@ -3,7 +3,7 @@ import { IngredientsService } from './ingredients.service';
 import { IngredientsController } from './ingredients.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Ingredient } from './entities/ingredient.entity';
-import { ProductIngredients } from 'src/products/entities/productIngredients.entity';
+import { ProductIngredients } from '../products/entities/productIngredients.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Ingredient, ProductIngredients])],
