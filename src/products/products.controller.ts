@@ -48,14 +48,9 @@ export class ProductsController {
     return this.productsService.remove(+id);
   }
 
-  @Post('ingredients')
+  @Post('ingredient')
   addIngredient(@Body() addIngredientInfos: AddIngredientDto) {
     return this.productsService.addIngredient(addIngredientInfos);
-  }
-
-  @Get(':id/ingredients')
-  productIngredients(@Param('id') id: string) {
-    return this.productsService.productIngredients(+id);
   }
 
   @Post(':productId/image')
@@ -64,7 +59,7 @@ export class ProductsController {
     @Param('productId') productId: string,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.productsService.addImage(+productId, file);
+    return this.productsService.createOrUpdateImage(+productId, file);
   }
 
   @Get(':productId/image')

@@ -55,6 +55,7 @@ export class ProductsService {
   }
 
   async findOne(id: number) {
+    // Relations => Select the ingredients of the product and its characteristics
     const product = await this.productRepository.findOne(id, {
       relations: ['productIngredients', 'productIngredients.ingredient'],
     });
@@ -68,6 +69,7 @@ export class ProductsService {
   }
 
   costAndAvailability(productIngredients: ProductIngredients[]) {
+    // Calculates availability and cost from the ingredients registered in the product
     let available = true;
     let cost = 0;
 
@@ -87,7 +89,7 @@ export class ProductsService {
   async update(id: number, newProduct: UpdateProductDto) {
     const product = await this.productRepository.findOne(id);
 
-    await this.validProductName(newProduct.name, id);
+    await this.validProductName(newProduct.name);
 
     product.name = newProduct?.name;
     product.price = newProduct?.price;
@@ -102,17 +104,16 @@ export class ProductsService {
     throw new HttpException('Successfully deleted', 204);
   }
 
-  async validProductName(name: string, id = -1) {
-    // pass product id as parameter if updating product
+  async validProductName(name: string) {
     const product = await this.productRepository.findOne({ name });
-    if (product && product.id !== id)
-      throw new ConflictException('Existing product name');
+    if (product) throw new ConflictException('Existing product name');
   }
 
   async addIngredient(infos: AddIngredientDto) {
     const { productId, ingredientId, ingredientUnits } = infos;
 
     await this.productRepository.findOne(productId);
+
     const ingredient = await this.ingredientRepository.findOne({
       id: ingredientId,
     });
@@ -122,6 +123,7 @@ export class ProductsService {
       where: { productId, ingredientId },
     });
 
+    // If existing relation => Updates
     if (existingRelation) {
       existingRelation.ingredientUnits = ingredientUnits;
       return this.productIngredientsRepository.save(existingRelation);
@@ -134,20 +136,13 @@ export class ProductsService {
     });
   }
 
-  async productIngredients(id: number) {
-    return this.productIngredientsRepository.find({
-      where: { productId: id },
-      relations: ['ingredient'],
-    });
-  }
-
-  async addImage(id, file: Express.Multer.File) {
+  async createOrUpdateImage(id: number, file: Express.Multer.File) {
     const product = await this.findOne(id);
     product.imageName = file.filename;
     return this.productRepository.save(product);
   }
 
-  async findImage(productId, res: Response) {
+  async findImage(productId: number, res: Response) {
     const product = await this.findOne(productId);
 
     if (!product.imageName)
