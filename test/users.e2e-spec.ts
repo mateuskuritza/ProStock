@@ -4,6 +4,8 @@ import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import * as userFactory from './factories/userFactory';
 
+// Acabei me batendo bastante por nunca ter feito testes no NestJS, acabei deixando alguns testes dependendo um do outro e provavelmente fiz o contrário de muitas boas práticas :( kkkkkk
+// Todas as rotas de produtos e ingredientes estão com o JwtAuthGuard, acabei fazendo só 1 teste em cada "describe" sobre a autenticação para não ficar repetitivo
 describe('UserController (e2e)', () => {
   let app: INestApplication;
 
