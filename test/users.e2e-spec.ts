@@ -3,22 +3,41 @@ import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
 import * as userFactory from './factories/userFactory';
+import { Repository } from 'typeorm';
+import { User } from 'src/users/entities/user.entity';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 // Acabei me batendo bastante por nunca ter feito testes no NestJS, acabei deixando alguns testes dependendo um do outro e provavelmente fiz o contrário de muitas boas práticas :( kkkkkk
 // Todas as rotas de produtos e ingredientes estão com o JwtAuthGuard, acabei fazendo só 1 teste em cada "describe" sobre a autenticação para não ficar repetitivo
+
 describe('UserController (e2e)', () => {
   let app: INestApplication;
+  let userRepository: Repository<User>;
 
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
+      imports: [
+        AppModule,
+        TypeOrmModule.forRoot({
+          type: 'postgres',
+          url: process.env.DATABASE_URL_TEST,
+          autoLoadEntities: true,
+          synchronize: true,
+        }),
+      ],
     }).compile();
 
     app = moduleFixture.createNestApplication();
+
+    userRepository = moduleFixture.get('UserRepository');
+
     await app.init();
   });
 
-  afterAll(async () => await app.close());
+  afterAll(async () => {
+    await userRepository.query('DELETE FROM users');
+    await app.close();
+  });
 
   const newUser = userFactory.create();
 
