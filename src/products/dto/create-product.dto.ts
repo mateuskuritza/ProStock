@@ -8,6 +8,6 @@ export class CreateProductDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
+  @Min(1)
   price: number;
 }

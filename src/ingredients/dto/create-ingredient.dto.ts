@@ -13,7 +13,7 @@ export class CreateIngredientDto {
 
   @IsNotEmpty()
   @IsNumber()
-  @Min(0)
+  @Min(1)
   unitPrice: number;
 
   @IsNotEmpty()
