@@ -367,4 +367,4 @@ $ npm run test:e2e
 
 ## Suporte
 
-Qualquer dúvida ou sugestão de melhoria pode entrar em contato comigo pelo meu <a target="_blank" href="www.bit.ly/3zgGEfp"> Linkedin </a> :)
+Qualquer dúvida ou sugestão de melhoria pode entrar em contato comigo pelo meu <a target="_blank" href="https://bit.ly/3zgGEfp"> Linkedin </a> :)
