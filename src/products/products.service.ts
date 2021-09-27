@@ -65,7 +65,7 @@ export class ProductsService {
       product.productIngredients,
     );
 
-    return { availableProduct: available, productCost: cost, ...product };
+    return { available, cost, ...product };
   }
 
   costAndAvailability(productIngredients: ProductIngredients[]) {
@@ -88,6 +88,7 @@ export class ProductsService {
 
   async update(id: number, newProduct: UpdateProductDto) {
     const product = await this.productRepository.findOne(id);
+    if (!product) throw new NotFoundException();
 
     await this.validProductName(newProduct.name);
 
@@ -112,7 +113,7 @@ export class ProductsService {
   async addIngredient(infos: AddIngredientDto) {
     const { productId, ingredientId, ingredientUnits } = infos;
 
-    await this.productRepository.findOne(productId);
+    await this.findOne(productId);
 
     const ingredient = await this.ingredientRepository.findOne({
       id: ingredientId,
@@ -149,7 +150,7 @@ export class ProductsService {
       throw new NotFoundException('This product does not have an image yet');
 
     return res.sendFile(
-      join(process.cwd(), '../uploads/product-images/' + product.imageName),
+      join(process.cwd(), 'src/uploads/product-images/' + product.imageName),
     );
   }
 }

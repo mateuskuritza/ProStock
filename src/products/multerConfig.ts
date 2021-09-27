@@ -12,7 +12,7 @@ const validExtensions = ['.png', '.jpg'];
 export const localStorage = {
   storage: diskStorage({
     destination: function (req, file, cb) {
-      cb(null, '../uploads/product-images');
+      cb(null, 'src/uploads/product-images');
     },
     filename: function (req, file, cb) {
       const fileName: string =
@@ -26,7 +26,6 @@ export const localStorage = {
     fileSize: MAX_SIZE_FILE,
   },
   fileFilter: (req: any, file: any, cb: any) => {
-    console.log(file);
     const extension: string = path.extname(file.originalname);
 
     validMimeTypes.includes(file.mimetype)
